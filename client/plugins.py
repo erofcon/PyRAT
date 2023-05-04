@@ -35,9 +35,25 @@ def shell(conn: socket.socket) -> None:
 
 
 def download(filename: str, conn: socket.socket) -> None:
-    try:
-        with open(filename, 'r') as file:
-            data = file.read()
-            conn.send(data.encode())
-    except Exception as err:
-        conn.send(f"An error has occurred {err}")
+    with open(filename, 'rb') as file:
+        buff = file.read(1024)
+
+        while buff:
+
+            conn.send(buff)
+            buff = file.read(1024)
+
+    conn.send('end'.encode())
+
+    # with open(filename, 'rb') as file:
+    #     conn.sendfile(file)
+    # conn.send('end'.encode())
+    #
+    # print("success send")
+
+    # try:
+    #     with open(filename, 'r') as file:
+    #         data = file.read()
+    #         conn.send(data.encode())
+    # except Exception as err:
+    #     conn.send(f"An error has occurred {err}")
